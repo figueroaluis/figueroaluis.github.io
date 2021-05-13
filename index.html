@@ -59,7 +59,7 @@
 								<span class="image main">
 									<center>
 									<img style="width: 75%" src="images/attention.png" alt="" />
-									<figcaption>Figure 2. Three main branches of the NAME framework.</figcaption>
+									<figcaption>Figure 3. The 2 attention mechanisms</figcaption>
 									</center>
 								</span>
 							</figure>
@@ -71,11 +71,13 @@
 							<figure>
 								<span class="image main">
 									<center>
-									<img style="width: 75%" src="images/decoder.png" alt="" />
-									<figcaption>Figure 2. Three main branches of the NAME framework.</figcaption>
-								</center>
+										<img style="width: 75%" src="images/decoder.png" alt="" />
+										<figcaption>Figure 4. Decoder architecture</figcaption>
+									</center>
 								</span>
 							</figure>
+							<p>Finally, we bring it all together in the decoder. In the baseline, we simply sum the person, group and scene features to get a non-sequential decoder input. We then replicate this this input to resemble a 5 step sequence and pass it through a decoder GRU that gives us our prediction features at each step. These predictions features are passed through a linear layer to convert them into predicted coordinates and compared to the ground truth to calculate the mean squared error</p>
+							<p>In the attention model, we apply the attention mechanisms explained above on the person, group and scene features. The attended features are then replicated to resemble a sequential input and treated to the same architecture explained above to get predicted coordinates.</p>
 
 
 
