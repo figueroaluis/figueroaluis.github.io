@@ -33,14 +33,27 @@
 
 							<!-- Starting body content -->
 							<h2>Motivation and Task</h2>
-							<p>Trajectory Prediction is the problem of predicting the short-term and long-term spatial coordinates of various road-agents such as cars, buses, pedestrians etc. Accurate and robust trajectory prediction is critical 
-							for the advancement of autonomous vehicles as it allows for better maneuverability in dense urban environments. As such, modeling pedestrian motion is non-trivial, as human motion paths are affected by environmental factors, 
-							leading to many plausible ways by which people could move. These movements vary, especially in complicated scenes where pedestrians move around obstacles such as trees, garbage bins, or benches. In addition, occlusion presents an additional challenge when tracking pedestrians. 
-							In this project, we wish to explore the use of segmentation information, in addition to a subject's movement and social interactions, to improve the trajectory prediction of pedestrians. Semantic segmentation can provide us with contextual information which can be used as a constraint to predict movements that are physically possible. 
-							This can further be expanded to include only socially acceptable movements, e.g. movements on a sidewalk and not on top of a car.</p>
-							<p>For this project, we define our task as follows:
-							Given a scene with multiple human subjects, we observe the spatial coordinates of the person of interest for the first 5 steps and then predict their trajectory for the next 5 steps, or 2 seconds into the future
-								</p>
+							<p>Trajectory Prediction is the problem of predicting the short-term and long-term spatial coordinates of various
+								road-agents such as cars, buses, pedestrians etc. Accurate and robust trajectory prediction is critical
+								for the advancement of autonomous vehicles as it allows for better maneuverability in dense urban environments.
+								As such, modeling pedestrian motion is non-trivial, as human motion paths are affected by environmental factors,
+								leading to many plausible ways by which people could move. These movements vary, especially in complicated
+								scenes where pedestrians move around obstacles such as trees, garbage bins, or benches. In addition,
+								occlusion presents an additional challenge when tracking pedestrians.
+								In this project, we wish to explore the use of segmentation information, in addition to a subject's movement and
+								social interactions, to improve the trajectory prediction of pedestrians. Semantic segmentation can provide us with contextual
+								information which can be used as a constraint to predict movements that are physically possible.
+								This can further be expanded to include only socially acceptable movements, e.g. movements are allowed on a sidewalk and not on top of a car.</p>
+
+							<p><i>For this project, the task of trajectory prediction is defined as followed:</i><br>
+								Given a scene with multiple human subjects, we observe the spatial coordinates of the person of interest for the
+								first 5 steps and then predict their trajectory for the next 5 steps, that is 2 seconds into the future.
+							</p>
+
+							<!-- Dataset -->
+							<h2>Dataset</h2>
+							<h4>Benchmark Pedestrian Trajectory Datasets</h4>
+
 							<!-- Framework/Pipeline content -->
 							<h2>Framework</h2>
 							<h4><i>Encoding Branches</i></h4>
@@ -50,9 +63,20 @@
 									<figcaption>Figure 2. Three main branches of the baseline framework.</figcaption>
 								</span>
 							</figure>
-							<p>We start by encoding the spatial coordinates of the subject. We first use a linear layer to encode each pair of coordinates into 64 features and pass it through a non linearity. These encoded features are then passed through a GRU at every training time step. The final output of the GRU acts as our person features.</p>
-							<p>Next, we look at the social interactions of the person of interest. We encode these interactions by dividing the immediate vicinity of the subject into a circular or log-circular grid. The influence of other people around the subject is measured as a function of the distance and relative angle between them. Similar to the person encoding, this is then passed through a GRU at every training step and the final output of the GRU is taken as the group features for the subject.</p>
-							<p>Finally, we encode the scene features of every sample. We do this by taking the last frame of the training sequence and passing it through the encoder of a pre-trained segmentation model. This gives up segmentation features for that particular scene. These features are then repeated over the training steps and passed through a GRU to get the final scene features.</p>
+							<p>We start by encoding the spatial coordinates of the subject. We first use a linear layer to encode
+								 each pair of coordinates into 64 features and pass it through a non linearity. These encoded features
+								 are then passed through a GRU at every training time step. The final output of the GRU acts as our person features.</p>
+							<p>Next, we look at the social interactions of the person of interest. We encode these interactions by dividing
+								the immediate vicinity of the subject into a circular or log-circular grid. The influence of other people
+								around the subject is measured as a function of the distance and relative angle between them. Similar to the
+								person encoding, this is then passed through a GRU at every training step and the final output of the GRU
+								is taken as the group features for the subject.
+							</p>
+							<p>Finally, we encode the scene features of every sample. We do this by taking the last frame of the
+								training sequence and passing it through the encoder of a pre-trained segmentation model. This gives
+								up segmentation features for that particular scene. These features are then repeated over the training
+								steps and passed through a GRU to get the final scene features.
+							</p>
 
 							<h4><i>Incorporating Attention</i></h4>
 							<figure>
@@ -76,7 +100,6 @@
 								</center>
 								</span>
 							</figure>
-
 
 
 							<!-- Results -->
