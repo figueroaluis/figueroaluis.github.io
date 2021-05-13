@@ -23,7 +23,9 @@
 							<br>
 							<h1>Trajectory Forecasting Using Segmentation & Attention</h1>
 							<p>Asish Gumparthi, Luis Figueroa, and Dhruv Vashisht | Course Project, Visual Learning and Recognition, Spring 2021</p>
-							<p><a href = "https://github.com/figueroaluis/TrajectoryPrediction">Code</a> | <a href = "https://trajectory-prediction.figueroaluis.com/">Website</a></p>
+							<center>
+								<p><a href = "https://github.com/figueroaluis/TrajectoryPrediction">Code</a> | <a href = "https://trajectory-prediction.figueroaluis.com/">Website</a></p>
+							</center>
 
 							<figure>
 								<span class="image main">
@@ -88,9 +90,14 @@
 									</center>
 								</span>
 							</figure>
-							<p>We also experiment with 2 attention mechanisms, namely, Scene attention and Person attention</p>
-							<p>Scene attention is a co-attention mechanism where the person and group features attend to the image features, thus generating person-scene attention features and group-scene attention features. These attention features are then concatenated and passed througha linear layer before being input to the decoder.</p>
-							<p>Person attention, on the other hand, is a co-attention mechanism where the scene and group features attend to the person features, thus generating scene-person attention features and group-person attention features. Our intuition is to get the scene and group context for each time step of the subject's trajectory to aid the decoder's predictions. As before, the attention features are again conacatenated and passed through a linear layer before sent to the decoder.</p>
+							<p>We also experiment with two attention mechanisms, namely, <i>Scene attention</i> and <i>Person attention</i></p>
+							<p>Scene attention is a co-attention mechanism where the person and group features attend to the image features,
+								thus generating person-scene attention features and group-scene attention features. These attention features are
+								then concatenated and passed througha linear layer before being input to the decoder.</p>
+							<p>Person attention, on the other hand, is a co-attention mechanism where the scene and group features attend
+								to the person features, thus generating scene-person attention features and group-person attention features. Our
+								intuition is to get the scene and group context for each time step of the subject's trajectory to aid the decoder's
+								predictions. As before, the attention features are again conacatenated and passed through a linear layer before sent to the decoder.</p>
 
 							<h4><i>Decoder</i></h4>
 							<figure>
@@ -101,45 +108,84 @@
 									</center>
 								</span>
 							</figure>
-							<p>Finally, we bring it all together in the decoder. In the baseline, we simply sum the person, group and scene features to get a non-sequential decoder input. We then replicate this this input to resemble a 5 step sequence and pass it through a decoder GRU that gives us our prediction features at each step. These predictions features are passed through a linear layer to convert them into predicted coordinates and compared to the ground truth to calculate the mean squared error</p>
-							<p>In the attention model, we apply the attention mechanisms explained above on the person, group and scene features. The attended features are then replicated to resemble a sequential input and treated to the same architecture explained above to get predicted coordinates.</p>
-
+							<p>Finally, we bring it all together in the decoder. In the baseline, we simply sum the person, group,
+								and scene features to get a non-sequential decoder input. We then replicate this input to resemble
+								a 5 step sequence and pass it through a decoder GRU that gives us our prediction features at each step.
+								These predictions features are passed through a linear layer to convert them into predicted coordinates
+								and compared to the ground truth to calculate the Mean Squared Error.
+							</p>
+							<p>In the attention model, we apply the attention mechanisms explained above on the person, group, and scene
+								features. The attended features are then replicated to resemble a sequential input and treated to the same
+								architecture explained above to get predicted coordinates.
+							</p>
 
 							<!-- Results -->
 							<h2>Experiments and Results</h2>
-							<h4><i>Quantitative Results</i></h4>
-							<p>For training, we use Mean squared error and we evaluate our models using Average displacement error (ADE) and Final displacement error (FDE), which are standard metrics in trajectory prediction tasks. ADE is the average of the euclidian distance between the predicted coordinates and the ground truth at every prediction step, whereas FDE is the Euclidian distance between the final predicted coordinate and final ground truth target for a given sample</p>
+							<p>In this section, we discuss the evaluation metrics and report the results of our different experiments
+								evaluated on the ETH/UCY datasets. We also report results from an ablation study used to validate our choice
+								of the scene feature encoder.</p>
+
+							<h4>Metrics</h4>
+							<p>For training, we use Mean Squared Error and we evaluate our models using <b>Average Displacement Error (ADE)</b>
+								and <b>Final Displacement Error (FDE)</b>, which are standard metrics in trajectory prediction tasks. ADE is
+								the average of the Euclidian Distance between the predicted coordinates and the ground truth at every
+								prediction step, whereas FDE is the Euclidian Distance between the final predicted coordinate and final
+								ground truth target for a given sample.</p>
+							<br>
+
 							<figure>
 								<span class="image main">
 									<center>
-										<img style="width: 75%" src="images/ade_fde.png" alt="" />
-										<figcaption>Figure 5. FDE & ADE</figcaption>
+										<img style="width: 65%" src="images/ade_fde.png" alt="" />
+										<figcaption>Figure 5. Visualizated example of the trajectory prediction metrics Average Displacement Error (ADE) and Final Displacement Error (FDE).</figcaption>
 									</center>
 								</span>
 							</figure>
-							<table style="width:100%">
-								<tr>
-								  <th>Model</th>
-								  <th>FDE</th>
-								  <th>ADE</th>
-								</tr>
-								<tr>
-								  <td>Baseline</td>
-								  <td>0.142</td>
-								  <td>0.081</td>
-								</tr>
-								<tr>
-									<td>ResNext Encoder + Person Attention</td>
-									<td><b>0.124</b></td>
-									<td><b>0.077</b></td>
-								  </tr>
-								  <tr>
-									<td>ResNext Encoder + Scene Attention</td>
-									<td>0.144</td>
-									<td>0.086</td>
-								  </tr>
-							  </table>
-							<h4><i>Qualitative Results</i></h4>
+
+							<h4>Experimental Setup</h4>
+							<p>We conducted four experiments to explore the effects of changing the scene encoders and by excluding or
+								adding attention mechanisms on person or group features. In our experiments, we define the <i>Baseline</i>
+								model by that defined in <a href="https://ieeexplore.ieee.org/document/8354239"><i>Xue et al.</i></a>.
+								The particular component to notice is that of the encoder for scene features. In this model, the Convolutional Neural
+								Network (CNN) is defined by three convolutional layers. For our experiments, we swap this scene encoder for a more
+								complex CNN architecture, namely <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a>. We then experiment with adding different attention
+								mechanisms on either the person or group features.
+							</p>
+
+							<h4><i>Main Quantitative Results</i></h4>
+								<table style="width:100%">
+									<caption><i>Experimental Results</i></caption>
+									<tr>
+									  <th>Model</th>
+									  <th>FDE</th>
+									  <th>ADE</th>
+									</tr>
+									<tr>
+									  <td>Baseline</td>
+									  <td>0.142</td>
+									  <td>0.081</td>
+									</tr>
+									<tr>
+										<td>ResNeXt Encoder + Person Attention</td>
+										<td><b>0.124</b></td>
+										<td><b>0.077</b></td>
+									</tr>
+									<tr>
+										<td>ResNeXt Encoder + Scene Attention</td>
+										<td>0.144</td>
+										<td>0.086</td>
+									</tr>
+								</table>
+
+							<p>In the table above, we compute the Average Displacement Error (ADE) and Final Displacement Error (FDE) and compare for different
+								models using distinct scene information extraction and attention mechanisms. Our results show that swapping the feature encoder with
+								ResNeXt and adding attention on the person features significantly reduced the ADE and FDE when compared to the baseline. Interestingly,
+								adding attention on the group features achieved comparatively similar ADE and FDE when compared to the baseline, but not any lower.
+							</p>
+
+							<br>
+
+							<h4><i>Main Qualitative Results</i></h4>
 
 						</div>
 					</div>
