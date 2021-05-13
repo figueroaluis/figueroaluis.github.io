@@ -23,6 +23,7 @@
 							<br>
 							<h1>Trajectory Forecasting Using Segmentation & Attention</h1>
 							<p>Asish Gumparthi, Luis Figueroa, and Dhruv Vashisht | Course Project, Visual Learning and Recognition, Spring 2021</p>
+							<p><a href = "https://github.com/figueroaluis/vlr-project-s2021">Code</a> | <a href = "https://trajectory-prediction.figueroaluis.com/">Website</a></p>
 
 							<figure>
 								<span class="image main">
@@ -83,7 +84,7 @@
 								<span class="image main">
 									<center>
 									<img style="width: 75%" src="images/attention.png" alt="" />
-									<figcaption>Figure 2. Three main branches of the NAME framework.</figcaption>
+									<figcaption>Figure 3. The 2 attention mechanisms</figcaption>
 									</center>
 								</span>
 							</figure>
@@ -95,17 +96,50 @@
 							<figure>
 								<span class="image main">
 									<center>
-									<img style="width: 75%" src="images/decoder.png" alt="" />
-									<figcaption>Figure 2. Three main branches of the NAME framework.</figcaption>
-								</center>
+										<img style="width: 75%" src="images/decoder.png" alt="" />
+										<figcaption>Figure 4. Decoder architecture</figcaption>
+									</center>
 								</span>
 							</figure>
+							<p>Finally, we bring it all together in the decoder. In the baseline, we simply sum the person, group and scene features to get a non-sequential decoder input. We then replicate this this input to resemble a 5 step sequence and pass it through a decoder GRU that gives us our prediction features at each step. These predictions features are passed through a linear layer to convert them into predicted coordinates and compared to the ground truth to calculate the mean squared error</p>
+							<p>In the attention model, we apply the attention mechanisms explained above on the person, group and scene features. The attended features are then replicated to resemble a sequential input and treated to the same architecture explained above to get predicted coordinates.</p>
 
 
 							<!-- Results -->
-							<h2>Experiments and Results</h2>
-							<h4><i>Qualitative Results</i></h4>
+							<h2>Experiments and Results</h2>							
 							<h4><i>Quantitative Results</i></h4>
+							<p>For training, we use Mean squared error and we evaluate our models using Average displacement error (ADE) and Final displacement error (FDE), which are standard metrics in trajectory prediction tasks. ADE is the average of the euclidian distance between the predicted coordinates and the ground truth at every prediction step, whereas FDE is the Euclidian distance between the final predicted coordinate and final ground truth target for a given sample</p>
+							<figure>
+								<span class="image main">
+									<center>
+										<img style="width: 75%" src="images/ade_fde.png" alt="" />
+										<figcaption>Figure 5. FDE & ADE</figcaption>
+									</center>
+								</span>
+							</figure>
+							<table style="width:100%">
+								<tr>
+								  <th>Model</th>
+								  <th>FDE</th>
+								  <th>ADE</th>
+								</tr>
+								<tr>
+								  <td>Baseline</td>
+								  <td>0.142</td>
+								  <td>0.081</td>
+								</tr>
+								<tr>
+									<td>ResNext Encoder + Person Attention</td>
+									<td><b>0.124</b></td>
+									<td><b>0.077</b></td>
+								  </tr>
+								  <tr>
+									<td>ResNext Encoder + Scene Attention</td>
+									<td>0.144</td>
+									<td>0.086</td>
+								  </tr>
+							  </table>
+							<h4><i>Qualitative Results</i></h4>
 
 						</div>
 					</div>
