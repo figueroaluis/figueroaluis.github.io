@@ -85,6 +85,37 @@
 							<h2>Experiments and Results</h2>
 							<h4><i>Qualitative Results</i></h4>
 							<h4><i>Quantitative Results</i></h4>
+							<p>For training, we use Mean squared error and we evaluate our models using Average displacement error (ADE) and Final displacement error (FDE), which are standard metrics in trajectory prediction tasks. ADE is the average of the euclidian distance between the predicted coordinates and the ground truth at every prediction step, whereas FDE is the Euclidian distance between the final predicted coordinate and final ground truth target for a given sample</p>
+							<figure>
+								<span class="image main">
+									<center>
+										<img style="width: 75%" src="images/ade_fde.png" alt="" />
+										<figcaption>Figure 5. FDE & ADE</figcaption>
+									</center>
+								</span>
+							</figure>
+							<table style="width:100%">
+								<tr>
+								  <th>Model</th>
+								  <th>FDE</th>
+								  <th>ADE</th>
+								</tr>
+								<tr>
+								  <td>Baseline</td>
+								  <td>0.142</td>
+								  <td>0.081</td>
+								</tr>
+								<tr>
+									<td>ResNext Encoder + Person Attention</td>
+									<td><b>0.124</b></td>
+									<td><b>0.077</b></td>
+								  </tr>
+								  <tr>
+									<td>ResNext Encoder + Scene Attention</td>
+									<td>0.144</td>
+									<td>0.086</td>
+								  </tr>
+							  </table>
 
 						</div>
 					</div>
