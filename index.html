@@ -187,6 +187,16 @@
 
 							<h4><i>Main Qualitative Results</i></h4>
 
+							<h4><i>CNN Ablation Study</i></h4>
+							<p>For this project, we were interested in improving the extraction of segmentation information from a scene. As a result, when
+							studying the baseline which consisted of a CNN architecture of three convolutional layers (with maxpool and batch norm layers), we
+							proposed that swapping this encoder with more complex, pre-trained CNN architectures could provide better scene feature extraction.
+							In this ablation study, we compare three different popular CNN models: VGG-16, ResNet-18, and ResNeXt-50. Since we wish to compare
+							the scene feature extraction capabilities of these pre-trained models, we utilize a SegNet decoder to achieve the segmentation results.
+							While the segmentation decoder could be any other semantic segmentation decoder, we utilize SegNet per the studies by
+							<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al.</i></a>.
+						</p>
+
 						</div>
 					</div>
 
