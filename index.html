@@ -55,7 +55,25 @@
 
 							<!-- Dataset -->
 							<h2>Dataset</h2>
-							<h4>Benchmark Pedestrian Trajectory Datasets</h4>
+
+							<figure>
+								<span class="image main">
+									<center>
+										<img style="width: 65%" src="images/dataset.png" alt="" />
+										<figcaption>Figure 2. Example frames from the ETH dataset.</figcaption>
+									</center>
+								</span>
+							</figure>
+
+							<p>For this project, we use two of the most popular datasets on human trajectory prediction, namely the ETH and UCY datasets.
+							These datasets contain videos with a fixed camera with a top-down view of a scene with pedestrians. ETH contains two subset
+							video sequences (Hotel and Univ) while UCY has three sequences (Univ, Zara01, and Zara02). These sequences provide a myriad of
+							pedestrian walking behaviors. In total, we collect 1050 samples, where each sample corresponds to a particular pedestrian
+							whose features are of the shape 10x4, where 10 is the total number of frames associated with each pedestrian. Any pedestrian that
+							appears in less then 10 associated frames is discarded. The last dimension comes comes from a set of (PedID, FrameID, X Y), where
+							PedID is the Pedestrian ID, FrameID is the frame identification number, and X and Y corresponds to the normalized pixel coordinates
+							of the pedestrian for a given frame.
+							</p>
 
 							<!-- Framework/Pipeline content -->
 							<h2>Framework</h2>
@@ -86,7 +104,7 @@
 								<span class="image main">
 									<center>
 									<img style="width: 75%" src="images/attention.png" alt="" />
-									<figcaption>Figure 3. The 2 attention mechanisms</figcaption>
+									<figcaption>Figure 3. The two attention mechanisms.</figcaption>
 									</center>
 								</span>
 							</figure>
@@ -104,10 +122,11 @@
 								<span class="image main">
 									<center>
 										<img style="width: 75%" src="images/decoder.png" alt="" />
-										<figcaption>Figure 4. Decoder architecture</figcaption>
+										<figcaption>Figure 4. Decoder architecture.</figcaption>
 									</center>
 								</span>
 							</figure>
+
 							<p>Finally, we bring it all together in the decoder. In the baseline, we simply sum the person, group,
 								and scene features to get a non-sequential decoder input. We then replicate this input to resemble
 								a 5 step sequence and pass it through a decoder GRU that gives us our prediction features at each step.
@@ -137,7 +156,9 @@
 								<span class="image main">
 									<center>
 										<img style="width: 65%" src="images/ade_fde.png" alt="" />
-										<figcaption>Figure 5. Visualizated example of the trajectory prediction metrics Average Displacement Error (ADE) and Final Displacement Error (FDE).</figcaption>
+										<figcaption>Figure 5. Visualizated example of the trajectory prediction metrics Average
+											Displacement Error (ADE) and Final Displacement Error (FDE).
+										</figcaption>
 									</center>
 								</span>
 							</figure>
