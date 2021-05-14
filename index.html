@@ -90,7 +90,7 @@
 									</center>
 								</span>
 							</figure>
-							<p>We also experiment with two attention mechanisms, namely, <i>Scene attention</i> and <i>Person attention</i></p>
+							<p>We also experiment with two attention mechanisms, namely, <i>Scene attention</i> and <i>Person attention</i>.</p>
 							<p>Scene attention is a co-attention mechanism where the person and group features attend to the image features,
 								thus generating person-scene attention features and group-scene attention features. These attention features are
 								then concatenated and passed througha linear layer before being input to the decoder.</p>
@@ -189,13 +189,49 @@
 
 							<h4><i>CNN Ablation Study</i></h4>
 							<p>For this project, we were interested in improving the extraction of segmentation information from a scene. As a result, when
-							studying the baseline which consisted of a CNN architecture of three convolutional layers (with maxpool and batch norm layers), we
-							proposed that swapping this encoder with more complex, pre-trained CNN architectures could provide better scene feature extraction.
-							In this ablation study, we compare three different popular CNN models: VGG-16, ResNet-18, and ResNeXt-50. Since we wish to compare
-							the scene feature extraction capabilities of these pre-trained models, we utilize a SegNet decoder to achieve the segmentation results.
-							While the segmentation decoder could be any other semantic segmentation decoder, we utilize SegNet per the studies by
-							<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al.</i></a>.
-						</p>
+							 studying the baseline which consisted of a CNN architecture of three convolutional layers (with maxpool and batch norm layers), we
+							 proposed that swapping this encoder with more complex, pre-trained CNN architectures could provide better scene feature extraction.
+							 In this ablation study, we compare three different popular CNN models: VGG-16, ResNet-18, and ResNeXt-50. Since we wish to compare
+							 the scene feature extraction capabilities of these pre-trained models, we utilize a <a href="https://arxiv.org/abs/1511.00561">SegNet</a>
+							 decoder to achieve the segmentation results. While the segmentation decoder could be any other semantic segmentation decoder
+							 (e.g. <a href='https://arxiv.org/abs/1505.04597'>U-Net</a>, <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a>), we utilize SegNet per the studies by
+							 <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a>.
+							</p>
+
+							<table style="width:100%">
+								<caption><i>Experimental Results</i></caption>
+								<tr>
+									<th>CNN Architecture</th>
+									<th>Segmentation Decoder Head</th>
+									<th>mIoU</th>
+								</tr>
+								<tr>
+									<td>VGG-16</td>
+									<td>SegNet</td>
+									<td>87.7</td>
+								</tr>
+								<tr>
+									<td>ResNet-18</td>
+									<td>SegNet</td>
+									<td>89.3</td>
+								</tr>
+								<tr>
+									<td>ResNeXt-50</td>
+									<td>SegNet</td>
+									<td><b>91.3</b></td>
+								</tr>
+							</table>
+
+							<p>In the table above, we show the results from the ablation study to choose a new encoder for the Trajectory Prediction model.
+								For this study, we utilize three CNN architectures pre-trained on <a href="https://ieeexplore.ieee.org/document/5206848">ImageNet</a>.
+								In <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a>, VGG-16 is selected as the feature extractor for the scene features.
+								<i>Syed et al</i> argues that a CNN encoder trained for the task of semantic segmentation can provide better scene features for pedestrian trajectory
+								predictions. Thus, we train and evaluate each model presented above on the <a>CamVid</a> dataset. Then, we evaluate the performance of each model
+								by using the mean Intersection over Union (mIoU) score, which is the average IoU score of all classes. As shown, the segmentation model with
+								a ResNeXt encoder achieves the greatest mIoU score. Therefore, we select ResNeXt our encoder of choice for the main experiments.
+							</p>
+
+
 
 						</div>
 					</div>
