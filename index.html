@@ -65,6 +65,19 @@
 								and the scene structure from the convolutional neural network. All three of these tasks are modeled separately and form a combined
 								representation which is then passed through an LSTM decoder to generate the results.
 							</p>
+							
+							<h2>Related Work</h2>
+							<p>Some of the relevant works pertaining to Trajectory Prediction are discussed briefly below: </p>
+							<p><b>Semantic Segmentation</b>: By labeling each pixel of an image with a corresponding class, we can augment other tasks that might require information
+							pertaining to the subject’s environment. Previous works like <a href="https://ieeexplore.ieee.org/document/8813801">SSeg-LSTM</a> have found that for any Segmentation model, the features extracted from the encoder work 
+							just as well, if not better than the ones extracted from the model’s decoder. In this project, we verify this by comparing the performance of encoder 
+							and decoder features of Segmentation models like ResNeXt and DeepLab.</p>
+							<p><b>Scene understanding</b>: A number of works have explored the effects of the environment on the trajectory of the subject. <a href="https://ieeexplore.ieee.org/document/8481580">Kitani et al.</a> used Inverse Reinforcement Learning to forecast human trajectory. 
+							<a href="https://arxiv.org/abs/1808.04018">Scene-LSTM</a> divided the static scene into a Manhattan Grid and predicted the pedestrian’s location using LSTMs. We plan to train a sequential model that utilizes segmentation information from the scene
+							to learn not only from the subject’s current trajectory but also its local environment. </p>
+							<p><b>Sequence modeling</b>: Most recent works like <a href="http://vision.stanford.edu/pdf/alahi2016cvpr.pdf">Social-LSTM</a> and <a href="https://arxiv.org/abs/1808.04018">Scene-LSTM</a> have utilized LSTMs to model the subjects’ trajectories based on their social and environmental interactions. Recent works like <a href="https://arxiv.org/abs/2003.08111">TrajNet</a> argue 
+							that Transformer Networks are more suitable for the task, thanks to their better capability to learn non-linear patterns. Since transformers work on the principle of attention, we experiment with combinations 
+							of GRU-based sequential models and attention mechanism to corroborate this.</p>
 
 							<!-- Dataset -->
 							<h2>Dataset</h2>
