@@ -71,7 +71,7 @@
 							<p><b>Semantic Segmentation</b>: By labeling each pixel of an image with a corresponding class, we can augment other tasks that might require information
 							pertaining to the subject’s environment. Previous works like <a href="https://ieeexplore.ieee.org/document/8813801">SSeg-LSTM</a> have found that for any Segmentation model, the features extracted from the encoder work 
 							just as well, if not better than the ones extracted from the model’s decoder. In this project, we verify this by comparing the performance of encoder 
-							and decoder features of Segmentation models like ResNeXt and DeepLab.</p>
+							and decoder features of Segmentation models like <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a> and <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a>.</p>
 							<p><b>Scene understanding</b>: A number of works have explored the effects of the environment on the trajectory of the subject. <a href="https://ieeexplore.ieee.org/document/8481580">Kitani et al.</a> used Inverse Reinforcement Learning to forecast human trajectory. 
 							<a href="https://arxiv.org/abs/1808.04018">Scene-LSTM</a> divided the static scene into a Manhattan Grid and predicted the pedestrian’s location using LSTMs. We plan to train a sequential model that utilizes segmentation information from the scene
 							to learn not only from the subject’s current trajectory but also its local environment. </p>
