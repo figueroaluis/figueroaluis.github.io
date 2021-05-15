@@ -223,12 +223,19 @@
 							</figure>
 
 							<h4>Experimental Setup</h4>
-							<p>We conducted four experiments to explore the effects of changing the scene encoders and by excluding or
-								adding attention mechanisms on person or group features. In our experiments, we define the <i>Baseline</i>
-								model by that defined in <a href="https://ieeexplore.ieee.org/document/8354239"><i>Xue et al.</i></a>.
+							<p>We conducted four experiments to explore the effects of changing the scene encoders, by excluding or
+								adding attention mechanisms on person or group features, and using semantic segmentation information.
+								In our experiments, we define the <i>Baseline</i> model by that proposed in <a href="https://ieeexplore.ieee.org/document/8354239"><i>Xue et al.</i></a>.
 								The particular component to notice is that of the encoder for scene features. In this model, the Convolutional Neural
 								Network (CNN) is defined by three convolutional layers. For our experiments, we swap this scene encoder for a more
-								complex CNN architecture, namely <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a>. We then experiment with adding different attention
+								complex CNN architecture, namely <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a>. It's important to clarify that
+								while <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i> refers to the scene features as "semantic segmentation
+								information", and so do we for convention, the features produced by this submodule are CNN <i>features</i> not pixel-wise class
+								prediction maps. In other words, these CNNs are just the encoder portion of an encoder-decoder semantic segmentation network.
+								<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i> does point out however, that these encoders area
+								fine-tuned for the task of segmentation, so we follow these studies. However, to explore <i>what would happen if we actually used
+								pixel-wise predictions as scene features</i>, we utilize a DeepLab model trained on <a href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">CamVid</a>
+								to produce scene features. We then experiment with adding different attention
 								mechanisms on either the person or group features. Further we also, explore the implications of taking feature maps from the decoder of a segmentation
 								network.
 							</p>
@@ -280,8 +287,8 @@
 							 In this ablation study, we compare three different popular CNN models: VGG-16, ResNet-18, and ResNeXt-50. Since we wish to compare
 							 the scene feature extraction capabilities of these pre-trained models, we utilize a <a href="https://arxiv.org/abs/1511.00561">SegNet</a>
 							 decoder to achieve the segmentation results. While the segmentation decoder could be any other semantic segmentation decoder
-							 (e.g. <a href='https://arxiv.org/abs/1505.04597'>U-Net</a>, <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a>), we utilize SegNet per the studies by
-							 <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a>.
+							 (e.g. <a href='https://arxiv.org/abs/1505.04597'>U-Net</a>, <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a>), we utilize SegNet
+							 per the studies by <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a>.
 							</p>
 
 							<table style="width:100%">
@@ -312,9 +319,9 @@
 								For this study, we utilize three CNN architectures pre-trained on <a href="https://ieeexplore.ieee.org/document/5206848">ImageNet</a>.
 								In <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a>, VGG-16 is selected as the feature extractor for the scene features.
 								<i>Syed et al</i> argues that a CNN encoder trained for the task of semantic segmentation can provide better scene features for pedestrian trajectory
-								predictions. Thus, we train and evaluate each model presented above on the <a>CamVid</a> dataset. Then, we evaluate the performance of each model
+								predictions. Thus, we train and evaluate each model presented above on the <a href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">CamVid</a> dataset. Then, we evaluate the performance of each model
 								by using the mean Intersection over Union (mIoU) score, which is the average IoU score of all classes. As shown, the segmentation model with
-								a ResNeXt encoder achieves the greatest mIoU score. Therefore, we select ResNeXt our encoder of choice for the main experiments.
+								a ResNeXt encoder achieves the greatest mIoU score. Therefore, we select ResNeXt as our encoder of choice for the main experiments.
 							</p>
 
 							<h4 id="video">Video Presentation</h4>
