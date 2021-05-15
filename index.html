@@ -103,7 +103,6 @@
 								and pass it through a non linearity. These encoded features are then passed through a Gated Recurrent Unit (GRU) at every training time step.
 								The final output of the GRU acts as our person features.
 							</p>
-							</br>
 							<h5> Social/ Group </h5>
 							<p>Next, we look at the social interactions of the person of interest. This submodule aims to model the influence of presence of other pedestrians on the
 								trajectory of the person of interest. This is done by constructing ocuupancy maps of the the surrounding of the pedestrian under consideration. We encode
@@ -136,9 +135,7 @@
 							either self attention models for the person's trajectory or attending the person's trajectory with the social interaction features. In this project, we
 							propose a pair of alternating co-attention models where attention is used for both the social and scene features. To the extent of our knowledge combining
 							all the three models and attention has not been explored in prior works.</p>
-							</br>
-							</br>
-							</br>
+
 							<h5> Alternating Co-Attention </h5>
 							<p>
 								In this attention model introduced by <a href="https://arxiv.org/pdf/1606.00061.pdf"><i>Lu et al.</i></a>, We sequentially alternate between a combination of our encoding branch outputs and then combine them.We experiment with two attention mechanisms,
