@@ -230,10 +230,10 @@
 								The particular component to notice is that of the encoder for scene features. In this model, the Convolutional Neural
 								Network (CNN) is defined by three convolutional layers. For our experiments, we swap this scene encoder for a more
 								complex CNN architecture, namely <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a>. It's important to clarify that
-								while <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i> refers to the scene features as "semantic segmentation
+								while <a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a> refers to the scene features as "semantic segmentation
 								information", and so do we for convention, the features produced by this submodule are CNN <i>features</i> not pixel-wise class
 								prediction maps. In other words, these CNNs are just the encoder portion of an encoder-decoder semantic segmentation network.
-								<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i> does point out however, that these encoders area
+								<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i></a> does point out however, that these encoders area
 								fine-tuned for the task of segmentation, so we follow these studies. However, to explore <i>what would happen if we actually used
 								pixel-wise predictions as scene features</i>, we utilize a <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a> model trained on <a href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">CamVid</a>
 								to produce scene features. We then experiment with adding different attention
