@@ -47,17 +47,22 @@
 								In this project, we wish to explore the use of segmentation information, in addition to a subject's movement and
 								social interactions, to improve the trajectory prediction of pedestrians. Semantic segmentation can provide us with contextual
 								information which can be used as a constraint to predict movements that are physically possible.
-								This can further be expanded to include only socially acceptable movements, e.g. movements are allowed on a sidewalk and not on top of a car.</p>
+								This can further be expanded to include only socially acceptable movements, e.g. movements are allowed on a sidewalk and
+								not on top of a car. Furthermore, we introduce the use of attention mechanisms on pedestrian movements as additional information
+								to predict their future trajectory.
+							</p>
 
 							<p><i>For this project, the task of trajectory prediction is defined as follows:</i><br>
 								Given a scene with multiple human subjects, we observe the spatial coordinates of the person of interest for the
-								first 5 steps and then predict their trajectory for the next 5 steps, that is 2 seconds into the future.
-								We formally deine the problem as follows, given spatial coordinates (xt; yt) over a period t = 1; 2...t of each pedestrian's trajectory in a video as input, The goal is to
-								predict the future location (xn; yn) for n = t + 1; t + 2;.... This work considers both human-human(HH) and human-scene(HS)
-								interactions for predictions. Since the HH model uses only historical coordinated for prediction and does not account for other
-								objects/pedestrians, this lack of scene awareness is overcome through the HS interaction model (provided as an occupancy map)
-								and the scene structure from the segmentation network. All three of these tasks are modeled separately and form a combined
-								representation which is then passed through an LSTM decoder to generate the model
+								first 5 steps and then predict their trajectory for the next 5 steps, that is 2 seconds into the future. <br>
+								We formally define the problem as follows, given spatial coordinates (x<sub>t</sub> ; y<sub>t</sub>) over a period t = 1, 2, ..., t
+								of each pedestrian's trajectory in a video as input, the goal is to
+								predict the future location (x<sub>n</sub> ; y<sub>n</sub>) for n = (t + 1), (t + 2), ... . <br>
+								This work considers both human-human (HH) and human-scene (HS) interactions for predictions. Since the HH model utilizes only historical
+								coordinates for prediction and does not take into account for other objects/pedestrians, this lack of scene awareness
+								is compensated through the HS interaction model (provided as an occupancy map)
+								and the scene structure from the convolutional neural network. All three of these tasks are modeled separately and form a combined
+								representation which is then passed through an LSTM decoder to generate the results.
 							</p>
 
 							<!-- Dataset -->
@@ -93,24 +98,24 @@
 							</figure>
 							<h5> Person</h5>
 							<p> This submodule is used for encoding the spatial coordinates of the subject. A total of t(=5 frames {2 seconds}) time steps
-								are observed by the model and predictions are made from t+1 till t+5. The number of input and output timesteps can be varied and 
-								in itself can be treated as an ablaltion study.	We first use a linear layer to encode each pair of coordinates into 64 features 
+								are observed by the model and predictions are made from t+1 until t+5. The number of input and output timesteps can be varied and
+								these variations themselves can be treated as an ablation study.	We first use a linear layer to encode each pair of coordinates into 64 features
 								and pass it through a non linearity. These encoded features are then passed through a Gated Recurrent Unit (GRU) at every training time step.
 								The final output of the GRU acts as our person features.
 							</p>
 							<h5> Social/ Group </h5>
-							<p>Next, we look at the social interactions of the person of interest. This submodule aims to model the influence of presence of other pedestrians on the 
-								trajectory of the person of interest. This is done by constructing ocuupancy maps of the the surrounding of the pedestrian under consideration. We encode 
+							<p>Next, we look at the social interactions of the person of interest. This submodule aims to model the influence of presence of other pedestrians on the
+								trajectory of the person of interest. This is done by constructing ocuupancy maps of the the surrounding of the pedestrian under consideration. We encode
 								these interactions by dividing the immediate vicinity of the subject into a circular or log-circular grid. The influence of other people
-								around the subject is measured as a function of the distance and relative angle between them. The ocuupancy maps are are computed using:
-								 $$ O^{i}_t (a,b) = \Sigma_{(j \in N^{i})} \alpha_{ab}(x^{j}_{t}, y^{j}_{t})$$
-								 Where \(\alpha_{ab}\) is a discrimination function of the radius that classifies whether the \(j^{th}\) pedestrian is inside the neighbourhood set \(N^{i}\)
+								around the subject is measured as a function of the distance and relative angle between them. The ocupancy maps are are computed using:
+								 $$ O^{i}_t (a,b) = \Sigma_{(j \in N^{i})} \alpha_{ab}(x^{j}_{t}, y^{j}_{t}) $$
+								 where \(\alpha_{ab}\) is a discrimination function of the radius that classifies whether the \(j^{th}\) pedestrian is inside the neighbourhood set \(N^{i}\)
 								 of the \(i^{th}\) pedestrian for (a,b) cell of the occupancy map.
 								Similar to the	person encoding, this is then passed through a GRU at every training step and the final output of the GRU
 								is taken as the group features for the subject.
 							</p>
 							<h5> Scene Understanding </h5>
-							<p>Finally, we encode the scene features of every sample. We hypothesize that given the short time span of our input sequence, taking 
+							<p>Finally, we encode the scene features of every sample. We hypothesize that given the short time span of our input sequence, taking
 								only the last frame of a sequence so as to reduce the computational overhead is a viable tradeoff that provides the model with significant scene understanding.
 								We do this by taking the last frame of the training sequence and passing it through the encoder of a
 								pre-trained CNN model. This gives us global scene features for that particular timestep.
@@ -126,14 +131,14 @@
 									</center>
 								</span>
 							</figure>
-							<p>Although there have prior works which have explored incorporating attention for the the trajectory prediction task, these have been limited to 
-							either self attention models for the person's trajectory or attending the person's trajectory with the social interaction features. In this project, we 
-							propose a pair of alternating co-attention models where attention is used for both the social and scene features. To the extent of our knowledge combining 
+							<p>Although there have prior works which have explored incorporating attention for the the trajectory prediction task, these have been limited to
+							either self attention models for the person's trajectory or attending the person's trajectory with the social interaction features. In this project, we
+							propose a pair of alternating co-attention models where attention is used for both the social and scene features. To the extent of our knowledge combining
 							all the three models and attention has not been explored in prior works.</p>
 
 							<h5> Alternating Co-Attention </h5>
 							<p>
-								In this attention model introduced by <a href="https://arxiv.org/pdf/1606.00061.pdf"><i>Lu et al.</i></a>, We sequentially alternate between a combination of our encoding branch outputs and then combine them.We experiment with two attention mechanisms, 
+								In this attention model introduced by <a href="https://arxiv.org/pdf/1606.00061.pdf"><i>Lu et al.</i></a>, We sequentially alternate between a combination of our encoding branch outputs and then combine them.We experiment with two attention mechanisms,
 								namely, <i><b>Scene attention</b></i> and <i><b>Person attention</b></i>.</p>
 							<p>Scene attention is a co-attention mechanism where the person and group features attend to the image features,
 								thus generating person-scene attention features and group-scene attention features. These attention features are
@@ -142,11 +147,11 @@
 								to the person features, thus generating scene-person attention features and group-person attention features. Our
 								intuition is to get the scene and group context for each time step of the subject's trajectory to aid the decoder's
 								predictions. As before, the attention features are again conacatenated and passed through a linear layer before sent to the decoder.</p>
-							<p> 
-								The overall attention mechanism is formulated as follows: 
-								Given an attention operation defined as \( \hat{x} = A(X;g) \). Where \(X\) in the input which in the case of Person attention for a given sub-brach can be person encodings (or scene encodings) and person encodings (or group encodings) . 
+							<p>
+								The overall attention mechanism is formulated as follows:
+								Given an attention operation defined as \( \hat{x} = A(X;g) \). Where \(X\) in the input which in the case of Person attention for a given sub-brach can be person encodings (or scene encodings) and person encodings (or group encodings) .
 								with attention guidance derived from the secondary input i.e the if X is person encoding then guidance would be derived from the scene encodings and vice-versa.  This attention operation outputs the attended vector, where the operations
-								carried out are expressed in the following steps. 
+								carried out are expressed in the following steps.
 
 								$$H = tanh(W_x X + (W_g g) \mathbb{1}^T )$$
 								$$a^x = softmax(w^t_{hx}H)$$
@@ -179,7 +184,7 @@
 								For Person attention model:
 								$$ h^{scene} = tanh(W_{scene}(\hat{q}^{scene} + \hat{v}^{scene}))$$
 								$$ h^{group} = tanh(W_{group}[(\hat{q}^{group} + \hat{v}^{group}), h^{scene}])$$
-							
+
 							</p>
 								For Scene attention model:
 								$$ h^{person} = tanh(W_{person}(\hat{q}^{person} + \hat{v}^{person}))$$
