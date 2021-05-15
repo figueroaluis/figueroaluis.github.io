@@ -11,6 +11,8 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+		<script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+		<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
 	</head>
 	<body class="is-preload">
 		<!-- Wrapper -->
@@ -33,7 +35,6 @@
 									<figcaption><i>TODO: replace with our results</i> Figure 1. Qualitative human trajectory predictions from our framework.</figcaption>
 								</span>
 							</figure>
-
 							<!-- Starting body content -->
 							<h2>Motivation and Task</h2>
 							<p>Trajectory Prediction is the problem of predicting the short-term and long-term spatial coordinates of various
@@ -51,6 +52,12 @@
 							<p><i>For this project, the task of trajectory prediction is defined as followed:</i><br>
 								Given a scene with multiple human subjects, we observe the spatial coordinates of the person of interest for the
 								first 5 steps and then predict their trajectory for the next 5 steps, that is 2 seconds into the future.
+								We formally deine the problem as follows, given spatial coordinates (xt; yt) over a period t = 1; 2...t of each pedestrian's trajectory in a video as input, The goal is to
+								predict the future location (xn; yn) for n = t + 1; t + 2;.... This work considers both human-human(HH) and human-scene(HS)
+								interactions for predictions. Since the HH model uses only historical coordinated for prediction and does not account for other
+								objects/pedestrians, this lack of scene awareness is overcome through the HS interaction model (provided as an occupancy map)
+								and the scene structure from the segmentation network. All three of these tasks are modeled separately and form a combined
+								representation which is then passed through an LSTM decoder to generate the model
 							</p>
 
 							<!-- Dataset -->
@@ -84,21 +91,30 @@
 									<figcaption>Figure 2. Three main branches of the baseline framework.</figcaption>
 								</span>
 							</figure>
-							<p>We start by encoding the spatial coordinates of the subject. We first use a linear layer to encode
-								 each pair of coordinates into 64 features and pass it through a non linearity. These encoded features
-								 are then passed through a Gated Recurrent Unit (GRU) at every training time step.
-								 The final output of the GRU acts as our person features.
+							<h5> Person</h5>
+							<p> This submodule is used for encoding the spatial coordinates of the subject. A total of t(=5 frames {2 seconds}) time steps
+								are observed by the model and predictions are made from t+1 till t+5. The number of input and output timesteps can be varied and 
+								in itself can be treated as an ablaltion study.	We first use a linear layer to encode each pair of coordinates into 64 features 
+								and pass it through a non linearity. These encoded features are then passed through a Gated Recurrent Unit (GRU) at every training time step.
+								The final output of the GRU acts as our person features.
 							</p>
-							<p>Next, we look at the social interactions of the person of interest. We encode these interactions by dividing
-								the immediate vicinity of the subject into a circular or log-circular grid. The influence of other people
-								around the subject is measured as a function of the distance and relative angle between them. Similar to the
-								person encoding, this is then passed through a GRU at every training step and the final output of the GRU
+							<h5> Social/ Group </h5>
+							<p>Next, we look at the social interactions of the person of interest. This submodule aims to model the influence of presence of other pedestrians on the 
+								trajectory of the person of interest. This is done by constructing ocuupancy maps of the the surrounding of the pedestrian under consideration. We encode 
+								these interactions by dividing the immediate vicinity of the subject into a circular or log-circular grid. The influence of other people
+								around the subject is measured as a function of the distance and relative angle between them. The ocuupancy maps are are computed using:
+								 $$ O^{i}_t (a,b) = \Sigma_{(j \in N^{i})} \alpha_{ab}(x^{j}_{t}, y^{j}_{t})$$
+								 Where \(\alpha_{ab}\) is a discrimination function of the radius that classifies whether the \(j^{th}\) pedestrian is inside the neighbourhood set \(N^{i}\)
+								 of the \(i^{th}\) pedestrian for (a,b) cell of the occupancy map.
+								Similar to the	person encoding, this is then passed through a GRU at every training step and the final output of the GRU
 								is taken as the group features for the subject.
 							</p>
-							<p>Finally, we encode the scene features of every sample. We do this by taking the last frame of the
-								training sequence and passing it through the encoder of a pre-trained CNN model. This gives
-								up scene features for that particular scene. These features are then repeated over the training
-								steps and passed through a GRU to get the final scene features.
+							<h5> Scene Understanding </h5>
+							<p>Finally, we encode the scene features of every sample. We hypothesize that given the short time span of our input sequence, taking 
+								only the last frame of a sequence so as to reduce the computational overhead is a viable tradeoff that provides the model with significant scene understanding.
+								We do this by taking the last frame of the training sequence and passing it through the encoder of a
+								pre-trained CNN model. This gives us global scene features for that particular timestep.
+								These features are then repeated over the training steps and passed through a GRU to get the final scene features.
 							</p>
 
 							<h4><i>Incorporating Attention</i></h4>
@@ -110,7 +126,15 @@
 									</center>
 								</span>
 							</figure>
-							<p>We also experiment with two attention mechanisms, namely, <i>Scene attention</i> and <i>Person attention</i>.</p>
+							<p>Although there have prior works which have explored incorporating attention for the the trajectory prediction task, these have been limited to 
+							either self attention models for the person's trajectory or attending the person's trajectory with the social interaction features. In this project, we 
+							propose a pair of alternating co-attention models where attention is used for both the social and scene features. To the extent of our knowledge combining 
+							all the three models and attention has not been explored in prior works.</p>
+
+							<h5> Alternating Co-Attention </h5>
+							<p>
+								In this attention model introduced by <a href="https://arxiv.org/pdf/1606.00061.pdf"><i>Lu et al.</i></a>, We sequentially alternate between a combination of our encoding branch outputs and then combine them.We experiment with two attention mechanisms, 
+								namely, <i><b>Scene attention</b></i> and <i><b>Person attention</b></i>.</p>
 							<p>Scene attention is a co-attention mechanism where the person and group features attend to the image features,
 								thus generating person-scene attention features and group-scene attention features. These attention features are
 								then concatenated and passed througha linear layer before being input to the decoder.</p>
@@ -118,7 +142,20 @@
 								to the person features, thus generating scene-person attention features and group-person attention features. Our
 								intuition is to get the scene and group context for each time step of the subject's trajectory to aid the decoder's
 								predictions. As before, the attention features are again conacatenated and passed through a linear layer before sent to the decoder.</p>
+							<p> 
+								The overall attention mechanism is formulated as follows: 
+								Given an attention operation defined as \( \hat{x} = A(X;g) \). Where \(X\) in the input which in the case of Person attention for a given sub-brach can be person encodings (or scene encodings) and person encodings (or group encodings) . 
+								with attention guidance derived from the secondary input i.e the if X is person encoding then guidance would be derived from the scene encodings and vice-versa.  This attention operation outputs the attended vector, where the operations
+								carried out are expressed in the following steps. 
 
+								$$H = tanh(W_x X + (W_g g) \mathbb{1}^T )$$
+								$$a^x = softmax(w^t_{hx}H)$$
+								$$\hat{x} = \Sigma(a_i^x x_i)$$
+
+								where \(\mathbb{1}\) is a vector with all elements to be 1. \(W_x, W_g \in R^{k×d} \)and \(w_{hx} \in R^k \) are parameters. \(a^x\) is the attention weight of feature \(X\).
+
+								Similarly for scene attention \(X\) can either be person encodings (or scene encodings) and group encodings (or scene encodings) and we follow the same mechanism as stated for the person attention.
+							</p>
 							<h4><i>Decoder</i></h4>
 							<figure>
 								<span class="image main">
@@ -136,7 +173,19 @@
 								and compared to the ground truth to calculate the Mean Squared Error.
 							</p>
 							<p>In the attention model, we apply the attention mechanisms explained above on the person, group, and scene
-								features. The attended features are then replicated to resemble a sequential input and treated to the same
+								features. Then we use a simple MLP to encode the attention features from the different sub-branches as follows:
+							</p>
+							<p>
+								For Person attention model:
+								$$ h^{scene} = tanh(W_{scene}(\hat{q}^{scene} + \hat{v}^{scene}))$$
+								$$ h^{group} = tanh(W_{group}[(\hat{q}^{group} + \hat{v}^{group}), h^{scene}])$$
+							
+							</p>
+								For Scene attention model:
+								$$ h^{person} = tanh(W_{person}(\hat{q}^{person} + \hat{v}^{person}))$$
+								$$ h^{group} = tanh(W_{group}[(\hat{q}^{group} + \hat{v}^{group}), h^{person}])$$
+							<p>
+								The attended features are then replicated to resemble a sequential input and treated to the same
 								architecture explained above to get predicted coordinates.
 							</p>
 
@@ -152,6 +201,9 @@
 								the average of the Euclidian Distance between the predicted coordinates and the ground truth at every
 								prediction step, whereas FDE is the Euclidian Distance between the final predicted coordinate and final
 								ground truth target for a given sample.</p>
+								$$ ADE = \frac{\Sigma_{i=1}^{N} \Sigma _{t = t_{observed+1}}^{t_{final}} \vert\vert Pred_t^i - GT_t^i\vert\vert_2}{ NT}$$
+
+								$$ FDE = \frac{\Sigma_{i=1}^{N} \vert\vert Pred_{t^i{_{final}}} - GT_{t^i{_{final}}}\vert\vert}{ N}$$
 							<br>
 
 							<figure>
@@ -172,7 +224,8 @@
 								The particular component to notice is that of the encoder for scene features. In this model, the Convolutional Neural
 								Network (CNN) is defined by three convolutional layers. For our experiments, we swap this scene encoder for a more
 								complex CNN architecture, namely <a href="https://arxiv.org/abs/1611.05431">ResNeXt</a>. We then experiment with adding different attention
-								mechanisms on either the person or group features.
+								mechanisms on either the person or group features. Further we also, explore the implications of taking feature maps from the decoder of a segmentation
+								network.
 							</p>
 
 							<h4><i>Main Quantitative Results</i></h4>
@@ -197,6 +250,11 @@
 										<td>ResNeXt Encoder + Scene Attention</td>
 										<td>0.144</td>
 										<td>0.086</td>
+									</tr>
+									<tr>
+										<td>DeepLabV3 Decoder + Person Attention</td>
+										<td>0.15</td>
+										<td>0.079</td>
 									</tr>
 								</table>
 
