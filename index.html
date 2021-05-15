@@ -234,7 +234,7 @@
 								prediction maps. In other words, these CNNs are just the encoder portion of an encoder-decoder semantic segmentation network.
 								<a href="https://ieeexplore.ieee.org/document/8813801"><i>Syed et al</i> does point out however, that these encoders area
 								fine-tuned for the task of segmentation, so we follow these studies. However, to explore <i>what would happen if we actually used
-								pixel-wise predictions as scene features</i>, we utilize a DeepLab model trained on <a href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">CamVid</a>
+								pixel-wise predictions as scene features</i>, we utilize a <a href="https://arxiv.org/pdf/1606.00915.pdf">DeepLab</a> model trained on <a href="http://mi.eng.cam.ac.uk/research/projects/VideoRec/CamVid/">CamVid</a>
 								to produce scene features. We then experiment with adding different attention
 								mechanisms on either the person or group features. Further we also, explore the implications of taking feature maps from the decoder of a segmentation
 								network.
@@ -273,7 +273,9 @@
 							<p>In the table above, we compute the Average Displacement Error (ADE) and Final Displacement Error (FDE) and compare for different
 								models using distinct scene information extraction and attention mechanisms. Our results show that swapping the feature encoder with
 								ResNeXt and adding attention on the person features significantly reduced the ADE and FDE when compared to the baseline. Interestingly,
-								adding attention on the group features achieved comparatively similar ADE and FDE when compared to the baseline, but not any lower.
+								adding attention on the group features achieved comparatively similar ADE and FDE when compared to the baseline, but not any lower. Additionally,
+								we attempted to use actual semantic segmentation predictions as our scene features, outperforming the baseline in ADE but not FDE, thus showing
+								an improvement.
 							</p>
 
 							<br>
